@@ -1,10 +1,9 @@
-name: Compile and Deploy LaTeX Resume
+name: Compile LaTeX Resume and Deploy to gh-pages Directory
 
 on:
   push:
     branches:
       - main  # or the branch you want to use
-  pull_request:
 
 jobs:
   build:
@@ -17,19 +16,19 @@ jobs:
       - name: Set up LaTeX
         run: |
           sudo apt-get update
-          sudo apt-get install -y texlive-full
+          sudo apt-get install -y texlive
 
       - name: Compile LaTeX document
         run: |
-          latexmk -pdf -interaction=nonstopmode resume.tex
-          mkdir -p out
-          mv resume.pdf out/
+          pdflatex resume.tex
+
+      - name: Create gh-pages Directory
+        run: mkdir -p gh-pages
 
       - name: Deploy to GitHub Pages
         run: |
-          mkdir -p docs
-          cp out/resume.pdf docs/
+          cp resume.pdf gh-pages/
         - uses: peaceiris/actions-gh-pages@v3
           with:
             github_token: ${{ secrets.GITHUB_TOKEN }}
-            publish_dir: ./docs
+            publish_dir: ./gh-pages
