@@ -22,12 +22,13 @@ jobs:
       - name: Compile LaTeX document
         run: |
           latexmk -pdf -interaction=nonstopmode resume.tex
-          mv resume.pdf index.pdf
+          mkdir -p out
+          mv resume.pdf out/
 
       - name: Deploy to GitHub Pages
         run: |
           mkdir -p docs
-          cp index.pdf docs/
+          cp out/resume.pdf docs/
         - uses: peaceiris/actions-gh-pages@v3
           with:
             github_token: ${{ secrets.GITHUB_TOKEN }}
