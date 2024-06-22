@@ -1,0 +1,33 @@
+name: Compile and Deploy LaTeX Resume
+
+on:
+  push:
+    branches:
+      - main  # or the branch you want to use
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up LaTeX
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-full
+
+      - name: Compile LaTeX document
+        run: |
+          latexmk -pdf -interaction=nonstopmode resume.tex
+
+      - name: Deploy to GitHub Pages
+        run: |
+          mkdir -p out
+          cp resume.pdf out/
+        - uses: peaceiris/actions-gh-pages@v3
+          with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            publish_dir: ./out
